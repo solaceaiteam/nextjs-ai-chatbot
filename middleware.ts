@@ -13,37 +13,8 @@ export async function middleware(request: NextRequest) {
     return new Response('pong', { status: 200 });
   }
 
-  // Prevent redirect loops by checking if we're already in auth flow
-  if (pathname.startsWith('/api/auth') || pathname.startsWith('/login') || pathname.startsWith('/register')) {
-    return NextResponse.next();
-  }
-
-  const token = await getToken({
-    req: request,
-    secret: process.env.AUTH_SECRET || 'your-super-secret-key-here-for-nextauth',
-    secureCookie: !isDevelopmentEnvironment,
-  });
-
-  if (!token) {
-    // Prevent redirect loops by checking if we're already being redirected
-    const redirectUrl = encodeURIComponent(request.url);
-    
-    // If the current URL already contains redirect parameters, don't redirect again
-    if (request.url.includes('redirectUrl=')) {
-      return NextResponse.next();
-    }
-
-    return NextResponse.redirect(
-      new URL(`/api/auth/guest?redirectUrl=${redirectUrl}`, request.url),
-    );
-  }
-
-  const isGuest = guestRegex.test(token?.email ?? '');
-
-  if (token && !isGuest && ['/login', '/register'].includes(pathname)) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
+  // TEMPORARILY DISABLE ALL AUTH MIDDLEWARE TO FIX REDIRECT LOOPS
+  // TODO: Re-enable once auth is properly configured
   return NextResponse.next();
 }
 

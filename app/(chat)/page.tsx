@@ -9,11 +9,12 @@ import { auth } from '../(auth)/auth';
 import { redirect } from 'next/navigation';
 
 export default async function Page(): Promise<React.JSX.Element> {
-  const session = await auth();
+  // TEMPORARILY DISABLE AUTH REDIRECT TO FIX REDIRECT LOOPS
+  // const session = await auth();
 
-  if (!session) {
-    redirect('/api/auth/guest');
-  }
+  // if (!session) {
+  //   redirect('/api/auth/guest');
+  // }
 
   const id = generateUUID();
 
@@ -30,7 +31,7 @@ export default async function Page(): Promise<React.JSX.Element> {
           initialChatModel={DEFAULT_CHAT_MODEL}
           initialVisibilityType="private"
           isReadonly={false}
-          session={session}
+          session={null}
           autoResume={false}
           showBetaBanner={true}
         />
@@ -48,7 +49,7 @@ export default async function Page(): Promise<React.JSX.Element> {
         initialChatModel={modelIdFromCookie.value}
         initialVisibilityType="private"
         isReadonly={false}
-        session={session}
+        session={null}
         autoResume={false}
         showBetaBanner={true}
       />
